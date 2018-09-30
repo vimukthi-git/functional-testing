@@ -9,10 +9,12 @@ import (
 func TestSendInvoiceToOwnNodeOnly(t *testing.T) {
 	e := utils.GetInsecureClient(t, utils.NODE1)
 
+	currency := "USD"
+
 	payload := map[string]interface{}{
 		"document": map[string]interface{}{
 			"data": map[string]interface{}{
-				"currency": "USD",
+				"currency": currency,
 				"net_amount": "1501",
 			},
 		},
@@ -24,26 +26,31 @@ func TestSendInvoiceToOwnNodeOnly(t *testing.T) {
 		WithJSON(payload).
 		Expect().Status(http.StatusOK).JSON().Object()
 
-	docIdentifier := obj.Value("core_document").Path("$.document_identifier").String().Raw()
+	docIdentifier := obj.Value("core_document").Path("$.document_identifier").String().NotEmpty().Raw()
 
 	getPayload := map[string]interface{}{
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("/legacy/invoice/get").
+	objGet := e.POST("/legacy/invoice/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
 		Expect().Status(http.StatusOK).JSON().NotNull()
+
+	objGet.Path("$.core_document.document_identifier").String().Equal(docIdentifier)
+	objGet.Path("$.data.currency").String().Equal(currency)
 }
 
 func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
 	e := utils.GetInsecureClient(t, utils.NODE1)
 
+	currency := "USD"
+
 	payload := map[string]interface{}{
 		"document": map[string]interface{}{
 			"data": map[string]interface{}{
-				"currency": "USD",
+				"currency": currency,
 				"net_amount": "1501",
 			},
 		},
@@ -55,17 +62,20 @@ func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
 		WithJSON(payload).
 		Expect().Status(http.StatusOK).JSON().Object()
 
-	docIdentifier := obj.Value("core_document").Path("$.document_identifier").String().Raw()
+	docIdentifier := obj.Value("core_document").Path("$.document_identifier").String().NotEmpty().Raw()
 
 	getPayload := map[string]interface{}{
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("/purchaseorder/get").
+	objGet := e.POST("/purchaseorder/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
 		Expect().Status(http.StatusOK).JSON().NotNull()
+
+	objGet.Path("$.core_document.document_identifier").String().Equal(docIdentifier)
+	objGet.Path("$.data.currency").String().Equal(currency)
 }
 
 func TestSendInvoiceToCollaborator(t *testing.T) {
