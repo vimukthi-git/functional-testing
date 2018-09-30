@@ -30,7 +30,7 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("/legacy/invoice").
+	e.POST("/legacy/invoice/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
