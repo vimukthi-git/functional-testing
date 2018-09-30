@@ -2,17 +2,12 @@ package tests
 
 import (
 	"testing"
-	"os"
 	"github.com/centrifuge/functional-testing/go/utils"
 	"net/http"
 )
 
 func TestSendInvoiceToOwnNodeOnly(t *testing.T) {
-	nodeURL := os.Getenv("NODE1URL")
-	if nodeURL == "" {
-		nodeURL = "https://35.184.66.29:8082"
-	}
-	e := utils.CreateInsecureClient(t, nodeURL)
+	e := utils.GetInsecureClient(t, utils.NODE1)
 
 	payload := map[string]interface{}{
 		"document": map[string]interface{}{
@@ -23,7 +18,7 @@ func TestSendInvoiceToOwnNodeOnly(t *testing.T) {
 		},
 	}
 
-	obj := e.POST("/invoice/send").
+	obj := e.POST("/legacy/invoice/send").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(payload).
@@ -35,7 +30,7 @@ func TestSendInvoiceToOwnNodeOnly(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("/invoice/get").
+	e.POST("/legacy/invoice/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
@@ -43,11 +38,7 @@ func TestSendInvoiceToOwnNodeOnly(t *testing.T) {
 }
 
 func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
-	nodeURL := os.Getenv("NODE1URL")
-	if nodeURL == "" {
-		nodeURL = "https://35.184.66.29:8082"
-	}
-	e := utils.CreateInsecureClient(t, nodeURL)
+	e := utils.GetInsecureClient(t, utils.NODE1)
 
 	payload := map[string]interface{}{
 		"document": map[string]interface{}{
@@ -78,15 +69,7 @@ func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
 }
 
 func TestSendInvoiceToCollaborator(t *testing.T) {
-	nodeURL1 := os.Getenv("NODE1URL")
-	nodeURL2 := os.Getenv("NODE2URL")
-	if nodeURL1 == "" {
-		nodeURL1 = "https://35.184.66.29:8082"
-	}
-	if nodeURL2 == "" {
-		nodeURL2 = "https://35.184.39.100:8082"
-	}
-	e := utils.CreateInsecureClient(t, nodeURL1)
+	e := utils.GetInsecureClient(t, utils.NODE1)
 
 	payload := map[string]interface{}{
 		"document": map[string]interface{}{
@@ -98,7 +81,7 @@ func TestSendInvoiceToCollaborator(t *testing.T) {
 		"recipients": []string{"JP5lVb65"},
 	}
 
-	obj := e.POST("/invoice/send").
+	obj := e.POST("/legacy/invoice/send").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(payload).
@@ -111,16 +94,16 @@ func TestSendInvoiceToCollaborator(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("/invoice/get").
+	e.POST("/legacy/invoice/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
 		Expect().Status(http.StatusOK).JSON().NotNull()
 
 	// Receiver has document
-	e1 := utils.CreateInsecureClient(t, nodeURL2)
+	e1 := utils.GetInsecureClient(t, utils.NODE2)
 
-	e1.POST("/invoice/get").
+	e1.POST("/legacy/invoice/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
@@ -128,15 +111,7 @@ func TestSendInvoiceToCollaborator(t *testing.T) {
 }
 
 func TestSendPurchaseOrderToCollaborator(t *testing.T) {
-	nodeURL1 := os.Getenv("NODE1URL")
-	nodeURL2 := os.Getenv("NODE2URL")
-	if nodeURL1 == "" {
-		nodeURL1 = "https://35.184.66.29:8082"
-	}
-	if nodeURL2 == "" {
-		nodeURL2 = "https://35.184.39.100:8082"
-	}
-	e := utils.CreateInsecureClient(t, nodeURL1)
+	e := utils.GetInsecureClient(t, utils.NODE1)
 
 	payload := map[string]interface{}{
 		"document": map[string]interface{}{
@@ -148,7 +123,7 @@ func TestSendPurchaseOrderToCollaborator(t *testing.T) {
 		"recipients": []string{"JP5lVb65"},
 	}
 
-	obj := e.POST("/purchaseorder/send").
+	obj := e.POST("/legacy/purchaseorder/send").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(payload).
@@ -161,16 +136,16 @@ func TestSendPurchaseOrderToCollaborator(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("/purchaseorder/get").
+	e.POST("/legacy/purchaseorder/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
 		Expect().Status(http.StatusOK).JSON().NotNull()
 
 	// Receiver has document
-	e1 := utils.CreateInsecureClient(t, nodeURL2)
+	e1 := utils.GetInsecureClient(t, utils.NODE2)
 
-	e1.POST("/purchaseorder/get").
+	e1.POST("/legacy/purchaseorder/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).

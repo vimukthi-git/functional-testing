@@ -9,14 +9,14 @@ import (
 )
 
 func CreateInsecureClient(t *testing.T, baseURL string) *httpexpect.Expect {
-	tr := &http.Transport{
+	transport := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	config := httpexpect.Config{
 		BaseURL:  baseURL,
 		Client:   &http.Client{
-			Transport: tr,
-			Timeout: time.Second * 600,
+			Transport: transport,
+			Timeout:   time.Second * 600,
 		},
 		Reporter: httpexpect.NewAssertReporter(t),
 		Printers: []httpexpect.Printer{
