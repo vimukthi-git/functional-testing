@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: functional-testing-{{ randAlphaNum 6 | lower }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+        - env:
+            - name: NODES
+              value: {{ $.Values.nodes }}
+            - name: NETWORK
+              value: {{ $.Values.network }}
+          image: 'centrifugeio/functional-testing:latest'
+          imagePullPolicy: Always
+          name: functional-testing
+      imagePullSecrets:
+        - name: myregistrykey
+      restartPolicy: Never
