@@ -88,7 +88,7 @@ func TestSendInvoiceToCollaborator(t *testing.T) {
 				"net_amount": "1501",
 			},
 		},
-		"recipients": []string{"JP5lVb65"},
+		"recipients": []string{"0x24FE6555BEB9"},
 	}
 
 	obj := e.POST("/legacy/invoice/send").
@@ -130,7 +130,7 @@ func TestSendPurchaseOrderToCollaborator(t *testing.T) {
 				"net_amount": "1501",
 			},
 		},
-		"recipients": []string{"JP5lVb65"},
+		"recipients": []string{"0x24FE6555BEB9"},
 	}
 
 	obj := e.POST("/purchaseorder/send").
