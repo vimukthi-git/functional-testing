@@ -56,7 +56,7 @@ func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
 		},
 	}
 
-	obj := e.POST("legacy/purchaseorder/send").
+	obj := e.POST("/legacy/purchaseorder//send").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(payload).
@@ -68,7 +68,7 @@ func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	objGet := e.POST("legacy/purchaseorder/get").
+	objGet := e.POST("/legacy/purchaseorder//get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
@@ -133,7 +133,7 @@ func TestSendPurchaseOrderToCollaborator(t *testing.T) {
 		"recipients": []string{"JP5lVb65"},
 	}
 
-	obj := e.POST("legacy/purchaseorder/send").
+	obj := e.POST("/legacy/purchaseorder//send").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(payload).
@@ -146,7 +146,7 @@ func TestSendPurchaseOrderToCollaborator(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	e.POST("legacy/purchaseorder/get").
+	e.POST("/legacy/purchaseorder//get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
@@ -155,7 +155,7 @@ func TestSendPurchaseOrderToCollaborator(t *testing.T) {
 	// Receiver has document
 	e1 := utils.GetInsecureClient(t, utils.NODE2)
 
-	e1.POST("legacy/purchaseorder/get").
+	e1.POST("/legacy/purchaseorder//get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
