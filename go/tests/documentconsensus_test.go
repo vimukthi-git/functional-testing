@@ -68,7 +68,7 @@ func TestSendPurchaseOrderToOwnNodeOnly(t *testing.T) {
 		"document_identifier": docIdentifier,
 	}
 
-	objGet := e.POST("/legacy/purchaseorder//get").
+	objGet := e.POST("/legacy/purchaseorder/get").
 		WithHeader("accept", "application/json").
 		WithHeader("Content-Type", "application/json").
 		WithJSON(getPayload).
