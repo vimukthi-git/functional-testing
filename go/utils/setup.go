@@ -20,7 +20,7 @@ func SetupEnvironment() {
 	nodesSlice := SplitString(nodesEnv, ",")
 
 	if len(nodesSlice) == 0 {
-		nodesSlice = append(nodesSlice, "https://localhost:8082", "https://localhost:8082")
+		nodesSlice = append(nodesSlice, "https://localhost:8082", "https://localhost:8083")
 	}
 
 	Nodes = map[string]string{
