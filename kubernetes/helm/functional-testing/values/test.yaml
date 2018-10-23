@@ -4,7 +4,7 @@
 
 nodes: 'https://35.184.66.29:8082,https://35.184.39.100:8082'
 
-network: 'centrifugeRussianhillEthRinkeby'
+network: 'russianHill'
 
 namespace: default
 
