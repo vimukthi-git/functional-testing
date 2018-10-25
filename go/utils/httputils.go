@@ -16,7 +16,7 @@ func CreateInsecureClient(t *testing.T, baseURL string) *httpexpect.Expect {
 		BaseURL:  baseURL,
 		Client:   &http.Client{
 			Transport: transport,
-			Timeout:   time.Second * 600,
+			Timeout:   time.Minute * 20,
 		},
 		Reporter: httpexpect.NewAssertReporter(t),
 		Printers: []httpexpect.Printer{
