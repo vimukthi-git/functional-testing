@@ -28,12 +28,15 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 
 	proofPayload := map[string]interface{}{
 		"type":   "http://github.com/centrifuge/centrifuge-protobufs/invoice/#invoice.InvoiceData",
-		"fields": []string{"net_amount", "currency"},
+		"fields": []string{"invoice.net_amount", "invoice.currency"},
 	}
 
 	objProof := GetProof(t, e, docIdentifier, proofPayload)
 	objProof.Path("$.header.document_id").String().Equal(docIdentifier)
-	objProof.Path("$.field_proofs[0].property").String().Equal("net_amount")
+	objProof.Path("$.field_proofs[0].property").String().Equal("invoice.net_amount")
+	objProof.Path("$.field_proofs[0].sorted_hashes").NotNull()
+	objProof.Path("$.field_proofs[1].property").String().Equal("invoice.currency")
+	objProof.Path("$.field_proofs[1].sorted_hashes").NotNull()
 }
 
 func GetProof(t *testing.T, e *httpexpect.Expect, documentID string, payload map[string]interface{}) *httpexpect.Object {
