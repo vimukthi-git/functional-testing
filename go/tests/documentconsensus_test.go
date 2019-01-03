@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/centrifuge/functional-testing/go/utils"
 	"github.com/gavv/httpexpect"
@@ -233,7 +234,10 @@ func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, payload 
 	method := "POST"
 	resp := getResponse(method, path, e, payload).Status(http.StatusOK)
 	assertOkResponse(t, resp)
-	return resp.JSON().Object()
+	obj := resp.JSON().Object()
+	txID := getTransactionID(t, obj)
+	waitTillSuccess(t, e, txID)
+	return obj
 }
 
 func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, documentID string, payload map[string]interface{}) *httpexpect.Object {
@@ -241,7 +245,10 @@ func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, document
 	method := "PUT"
 	resp := getResponse(method, path, e, payload).Status(http.StatusOK)
 	assertOkResponse(t, resp)
-	return resp.JSON().Object()
+	obj := resp.JSON().Object()
+	txID := getTransactionID(t, obj)
+	waitTillSuccess(t, e, txID)
+	return obj
 }
 
 func getResponse(method, path string, e *httpexpect.Expect, payload map[string]interface{}) *httpexpect.Response {
@@ -255,5 +262,31 @@ func getResponse(method, path string, e *httpexpect.Expect, payload map[string]i
 func assertOkResponse(t *testing.T, response *httpexpect.Response) {
 	if response.Raw().StatusCode != http.StatusOK {
 		assert.Fail(t, "Response Payload: ", response.Body().Raw())
+	}
+}
+
+func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
+	txID := resp.Value("header").Path("$.transaction_id").String().Raw()
+	if txID == "" {
+		t.Error("transaction ID empty")
+	}
+
+	return txID
+}
+
+func waitTillSuccess(t *testing.T, e *httpexpect.Expect, txID string) {
+	for {
+		resp := e.GET("/transactions/" + txID).Expect().Status(200).JSON().Object()
+		status := resp.Path("$.status").String().Raw()
+		if status == "pending" {
+			time.Sleep(100 * time.Millisecond)
+			continue
+		}
+
+		if status == "failed" {
+			t.Error(resp.Path("$.message").String().Raw())
+		}
+
+		break
 	}
 }
