@@ -1,0 +1,16 @@
+language: go
+go:
+  - 1.11.4
+
+services:
+  - docker
+
+checkout:
+  post:
+    git pull --ff-only origin "refs/pull/${CI_PULL_REQUEST//*pull\//}/merge"
+
+jobs:
+  include:
+    - stage: build_artifacts
+      if: (NOT type IN (pull_request)) AND ((branch = develop) OR (branch = master))
+      script: make build-docker
