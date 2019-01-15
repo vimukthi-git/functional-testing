@@ -23,25 +23,25 @@ func testWrongFormat(t *testing.T, docType string) {
 	method := "POST"
 
 	// nil create payload
-	resp := getResponse(method, path, c, nil)
+	resp := getResponse(method, path, c, utils.Nodes[utils.NODE1].ID, nil)
 	assertFailResponse(t, resp)
 
 	// wrong api format
 	p := map[string]interface{}{
 		"document": map[string]interface{}{"data": map[string]interface{}{"currency": "EUR"}},
 	}
-	resp = getResponse(method, path, c, p)
+	resp = getResponse(method, path, c, utils.Nodes[utils.NODE1].ID, p)
 	assertFailResponse(t, resp)
 
 	path = fmt.Sprintf("/%s/%s", docType, "")
 	method = "PUT"
 
 	// nil update
-	resp = getResponse(method, path, c, nil)
+	resp = getResponse(method, path, c, utils.Nodes[utils.NODE1].ID, nil)
 	assertFailResponse(t, resp)
 
 	// wrong format
-	resp = getResponse(method, path, c, p)
+	resp = getResponse(method, path, c, utils.Nodes[utils.NODE1].ID, p)
 	assertFailResponse(t, resp)
 }
 

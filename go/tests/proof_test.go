@@ -22,7 +22,7 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 		},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -31,7 +31,7 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 		"fields": []string{"invoice.net_amount", "invoice.currency"},
 	}
 
-	objProof := GetProof(t, e, docIdentifier, proofPayload)
+	objProof := GetProof(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier, proofPayload)
 	objProof.Path("$.header.document_id").String().Equal(docIdentifier)
 	objProof.Path("$.field_proofs[0].property").String().Equal("invoice.net_amount")
 	objProof.Path("$.field_proofs[0].sorted_hashes").NotNull()
@@ -39,10 +39,8 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 	objProof.Path("$.field_proofs[1].sorted_hashes").NotNull()
 }
 
-func GetProof(t *testing.T, e *httpexpect.Expect, documentID string, payload map[string]interface{}) *httpexpect.Object {
-	obj := e.POST("/document/"+documentID+"/proof").
-		WithHeader("accept", "application/json").
-		WithHeader("Content-Type", "application/json").
+func GetProof(t *testing.T, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}) *httpexpect.Object {
+	obj := utils.AddCommonHeaders(e.POST("/document/"+documentID+"/proof"), auth).
 		WithJSON(payload).
 		Expect().Status(http.StatusOK)
 	assertOkResponse(t, obj)

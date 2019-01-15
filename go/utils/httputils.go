@@ -26,3 +26,10 @@ func CreateInsecureClient(t *testing.T, baseURL string) *httpexpect.Expect {
 	}
 	return httpexpect.WithConfig(config)
 }
+
+func AddCommonHeaders(req *httpexpect.Request, auth string) *httpexpect.Request {
+	return req.
+		WithHeader("accept", "application/json").
+		WithHeader("Content-Type", "application/json").
+		WithHeader("authorization", auth)
+}
