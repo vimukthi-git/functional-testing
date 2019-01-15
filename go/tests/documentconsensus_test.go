@@ -29,15 +29,15 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
-	doc := GetDocument(t, utils.INVOICE, e, docIdentifier)
+	doc := GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e1, docIdentifier)
+	doc = GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// update invoice
@@ -52,14 +52,14 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
-	GetDocument(t, utils.INVOICE, e, docIdentifier)
+	GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e1, docIdentifier)
+	doc = GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 	doc.Path("$.data.gross_amount").String().Equal("41")
 }
 
@@ -81,15 +81,15 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
-	doc := GetDocument(t, utils.INVOICE, e, docIdentifier)
+	doc := GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e1, docIdentifier)
+	doc = GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// update invoice
@@ -104,14 +104,14 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e1, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
-	GetDocument(t, utils.INVOICE, e1, docIdentifier)
+	GetDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.INVOICE, e, docIdentifier)
+	doc = GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 	doc.Path("$.data.gross_amount").String().Equal("41")
 }
 
@@ -133,15 +133,15 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, payload)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
-	doc := GetDocument(t, utils.PURCHASEORDER, e, docIdentifier)
+	doc := GetDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.PURCHASEORDER, e1, docIdentifier)
+	doc = GetDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// update invoice
@@ -156,14 +156,14 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.PURCHASEORDER, e, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.net_amount").String().Equal("41")
-	GetDocument(t, utils.PURCHASEORDER, e, docIdentifier)
+	GetDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.PURCHASEORDER, e1, docIdentifier)
+	doc = GetDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 	doc.Path("$.data.net_amount").String().Equal("41")
 }
 
@@ -185,15 +185,15 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, payload)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
-	doc := GetDocument(t, utils.PURCHASEORDER, e, docIdentifier)
+	doc := GetDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.PURCHASEORDER, e1, docIdentifier)
+	doc = GetDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 	doc.Path("$.data.currency").String().Equal(currency)
 
 	// update invoice
@@ -208,53 +208,49 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
 	}
 
-	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.net_amount").String().Equal("41")
-	GetDocument(t, utils.PURCHASEORDER, e1, docIdentifier)
+	GetDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 
 	// Receiver has document
-	doc = GetDocument(t, utils.PURCHASEORDER, e, docIdentifier)
+	doc = GetDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 	doc.Path("$.data.net_amount").String().Equal("41")
 }
 
-func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, docIdentifier string) *httpexpect.Value {
-	objGet := e.GET(fmt.Sprintf("/%s/%s", docType, docIdentifier)).
-		WithHeader("accept", "application/json").
-		WithHeader("Content-Type", "application/json").
+func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, docIdentifier string) *httpexpect.Value {
+	objGet := utils.AddCommonHeaders(e.GET(fmt.Sprintf("/%s/%s", docType, docIdentifier)), auth).
 		Expect().Status(http.StatusOK)
 	assertOkResponse(t, objGet)
 	objGet.JSON().Path("$.header.document_id").String().Equal(docIdentifier)
 	return objGet.JSON()
 }
 
-func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, payload map[string]interface{}) *httpexpect.Object {
+func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
 	path := fmt.Sprintf("/%s", docType)
 	method := "POST"
-	resp := getResponse(method, path, e, payload).Status(http.StatusOK)
+	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
 	assertOkResponse(t, resp)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
-	waitTillSuccess(t, e, txID)
+	waitTillSuccess(t, e, auth, txID)
 	return obj
 }
 
-func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, documentID string, payload map[string]interface{}) *httpexpect.Object {
+func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}) *httpexpect.Object {
 	path := fmt.Sprintf("/%s/%s", docType, documentID)
 	method := "PUT"
-	resp := getResponse(method, path, e, payload).Status(http.StatusOK)
+	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
 	assertOkResponse(t, resp)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
-	waitTillSuccess(t, e, txID)
+	waitTillSuccess(t, e, auth, txID)
 	return obj
 }
 
-func getResponse(method, path string, e *httpexpect.Expect, payload map[string]interface{}) *httpexpect.Response {
-	return e.Request(method, path).
-		WithHeader("accept", "application/json").
-		WithHeader("Content-Type", "application/json").
+func getResponse(method, path string, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Response {
+	return utils.AddCommonHeaders(e.Request(method, path), auth).
 		WithJSON(payload).
 		Expect()
 }
@@ -274,9 +270,9 @@ func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
 	return txID
 }
 
-func waitTillSuccess(t *testing.T, e *httpexpect.Expect, txID string) {
+func waitTillSuccess(t *testing.T, e *httpexpect.Expect, auth string, txID string) {
 	for {
-		resp := e.GET("/transactions/" + txID).Expect().Status(200).JSON().Object()
+		resp := utils.AddCommonHeaders(e.GET("/transactions/" + txID), auth).Expect().Status(200).JSON().Object()
 		status := resp.Path("$.status").String().Raw()
 		if status == "pending" {
 			time.Sleep(100 * time.Millisecond)
