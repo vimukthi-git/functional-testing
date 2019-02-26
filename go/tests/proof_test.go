@@ -33,9 +33,9 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 
 	objProof := GetProof(t, e, utils.Nodes[utils.NODE1].ID, docIdentifier, proofPayload)
 	objProof.Path("$.header.document_id").String().Equal(docIdentifier)
-	objProof.Path("$.field_proofs[0].property").String().Equal("0x010000000000000f") // invoice.net_amount
+	objProof.Path("$.field_proofs[0].property").String().Equal("0x000100000000000f") // invoice.net_amount
 	objProof.Path("$.field_proofs[0].sorted_hashes").NotNull()
-	objProof.Path("$.field_proofs[1].property").String().Equal("0x010000000000000d") // invoice.currency
+	objProof.Path("$.field_proofs[1].property").String().Equal("0x000100000000000d") // invoice.currency
 	objProof.Path("$.field_proofs[1].sorted_hashes").NotNull()
 }
 
