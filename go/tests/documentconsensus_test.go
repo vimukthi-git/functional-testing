@@ -20,11 +20,11 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"invoice_number": "12324",
-			"due_date":       "2018-09-26T23:12:37.902198664Z",
-			"gross_amount":   "40",
-			"currency":       currency,
-			"net_amount":     "40",
+			"number":       "12324",
+			"date_due":     "2018-09-26T23:12:37.902198664Z",
+			"gross_amount": "40",
+			"currency":     currency,
+			"net_amount":   "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -43,11 +43,11 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 	// update invoice
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
-			"invoice_number": "12324",
-			"due_date":       "2018-09-26T23:12:37.902198664Z",
-			"gross_amount":   "41",
-			"currency":       currency,
-			"net_amount":     "41",
+			"number":       "12324",
+			"date_due":     "2018-09-26T23:12:37.902198664Z",
+			"gross_amount": "41",
+			"currency":     currency,
+			"net_amount":   "41",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -72,11 +72,11 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"invoice_number": "12324",
-			"due_date":       "2018-09-26T23:12:37.902198664Z",
-			"gross_amount":   "40",
-			"currency":       currency,
-			"net_amount":     "40",
+			"number":       "12324",
+			"date_due":     "2018-09-26T23:12:37.902198664Z",
+			"gross_amount": "40",
+			"currency":     currency,
+			"net_amount":   "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -95,11 +95,11 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 	// update invoice
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
-			"invoice_number": "12324",
-			"due_date":       "2018-09-26T23:12:37.902198664Z",
-			"gross_amount":   "41",
-			"currency":       currency,
-			"net_amount":     "41",
+			"number":       "12324",
+			"date_due":     "2018-09-26T23:12:37.902198664Z",
+			"gross_amount": "41",
+			"currency":     currency,
+			"net_amount":   "41",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
 	}
@@ -272,7 +272,7 @@ func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
 
 func waitTillSuccess(t *testing.T, e *httpexpect.Expect, auth string, txID string) {
 	for {
-		resp := utils.AddCommonHeaders(e.GET("/transactions/" + txID), auth).Expect().Status(200).JSON().Object()
+		resp := utils.AddCommonHeaders(e.GET("/transactions/"+txID), auth).Expect().Status(200).JSON().Object()
 		status := resp.Path("$.status").String().Raw()
 		if status == "pending" {
 			time.Sleep(100 * time.Millisecond)
