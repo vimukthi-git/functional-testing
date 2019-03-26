@@ -124,11 +124,10 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number":     "12324",
-			"delivery_date": "2018-09-26T23:12:37.902198664Z",
-			"tax_amount":    "40",
-			"currency":      currency,
-			"net_amount":    "40",
+			"number":       "12324",
+			"date_created": "2018-09-26T23:12:37.902198664Z",
+			"total_amount": "40",
+			"currency":     currency,
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -147,11 +146,10 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 	// update invoice
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number":     "12324",
-			"delivery_date": "2018-09-26T23:12:37.902198664Z",
-			"tax_amount":    "41",
-			"currency":      currency,
-			"net_amount":    "41",
+			"number":       "12324",
+			"date_created": "2018-09-26T23:12:37.902198664Z",
+			"total_amount": "41",
+			"currency":     currency,
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -159,12 +157,12 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
 
 	// check updated gross amount
-	obj.Value("data").Path("$.net_amount").String().Equal("41")
+	obj.Value("data").Path("$.total_amount").String().Equal("41")
 	GetDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
 
 	// Receiver has document
 	doc = GetDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
-	doc.Path("$.data.net_amount").String().Equal("41")
+	doc.Path("$.data.total_amount").String().Equal("41")
 }
 
 func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
@@ -176,11 +174,10 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number":    "12324",
-			"due_date":     "2018-09-26T23:12:37.902198664Z",
-			"gross_amount": "40",
+			"number":       "12324",
+			"date_created": "2018-09-26T23:12:37.902198664Z",
+			"total_amount": "40",
 			"currency":     currency,
-			"net_amount":   "40",
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
 	}
@@ -199,11 +196,10 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 	// update invoice
 	payload = map[string]interface{}{
 		"data": map[string]interface{}{
-			"po_number":     "12324",
-			"delivery_date": "2018-09-26T23:12:37.902198664Z",
-			"tax_amount":    "41",
-			"currency":      currency,
-			"net_amount":    "41",
+			"number":       "12324",
+			"date_created": "2018-09-26T23:12:37.902198664Z",
+			"total_amount": "41",
+			"currency":     currency,
 		},
 		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
 	}
@@ -211,12 +207,12 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)
 
 	// check updated gross amount
-	obj.Value("data").Path("$.net_amount").String().Equal("41")
+	obj.Value("data").Path("$.total_amount").String().Equal("41")
 	GetDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier)
 
 	// Receiver has document
 	doc = GetDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
-	doc.Path("$.data.net_amount").String().Equal("41")
+	doc.Path("$.data.total_amount").String().Equal("41")
 }
 
 func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, docIdentifier string) *httpexpect.Value {
