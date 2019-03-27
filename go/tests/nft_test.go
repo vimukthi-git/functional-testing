@@ -1,0 +1,58 @@
+package tests
+
+import (
+	"fmt"
+	"net/http"
+	"testing"
+
+	"github.com/centrifuge/functional-testing/go/utils"
+	"github.com/gavv/httpexpect"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestCreateInvoiceUnpaidNFT(t *testing.T) {
+	// nodes
+	e := utils.GetInsecureClient(t, utils.NODE1)
+
+	// create invoice
+	currency := "USD"
+	payload := map[string]interface{}{
+		"data": map[string]interface{}{
+			"number":         "12324",
+			"status":         "unpaid",
+			"sender":         utils.Nodes[utils.NODE1].ID,
+			"document_type":  "invoice",
+			"date_due":       "2018-09-26T23:12:37.902198664Z",
+			"gross_amount":   "40",
+			"currency":       currency,
+			"net_amount":     "40",
+		},
+		"collaborators":    []string{},
+	}
+
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+
+	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
+
+	doc := GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
+	doc.Path("$.data.currency").String().Equal(currency)
+
+	// mint invoice unpaid NFT
+	nftPayload := map[string]interface{}{
+		"identifier":     docIdentifier,
+		"depositAddress": "0x44a0579754d6c94e7bb2c26bfa7394311cc50ccb", // Centrifuge address
+	}
+	obj = MintInvoiceUnpaidNFT(t, e, utils.Nodes[utils.NODE1].ID, nftPayload)
+	assert.NotNil(t, obj.Value("token_id").String())
+}
+
+func MintInvoiceUnpaidNFT(t *testing.T, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
+	path := fmt.Sprintf("/token/mint/invoice/unpaid/%s", payload["identifier"])
+	method := "POST"
+	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
+	assertOkResponse(t, resp)
+	obj := resp.JSON().Object()
+	txID := getTransactionID(t, obj)
+	waitTillSuccess(t, e, auth, txID)
+	return obj
+}
