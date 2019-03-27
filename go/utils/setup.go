@@ -34,7 +34,7 @@ func SetupEnvironment() {
 	}
 
 	if len(idsSlice) == 0 {
-		idsSlice = append(idsSlice, "0x61BCcC7ece0828c221A57142116cEdDB9E69CaDc", "0xA598BC6759a9B695A960F90322c700C80cD1509d")
+		idsSlice = append(idsSlice, "0x54fB43B4a2809a589e88c69A9CD0D1922e08D15D", "0x834A63dBa24e82558d5D6a62AE7cA7cb3d69183b")
 	}
 
 	Nodes = map[string]node{
