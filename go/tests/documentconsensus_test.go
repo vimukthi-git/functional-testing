@@ -26,7 +26,9 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "40",
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
@@ -49,7 +51,9 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "41",
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
@@ -78,7 +82,9 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "40",
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
@@ -101,7 +107,9 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "41",
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE1].ID},
+		},
 	}
 
 	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)
@@ -129,7 +137,9 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 			"total_amount": "40",
 			"currency":     currency,
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
@@ -151,7 +161,9 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 			"total_amount": "41",
 			"currency":     currency,
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
@@ -179,7 +191,9 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 			"total_amount": "40",
 			"currency":     currency,
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
@@ -201,7 +215,9 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 			"total_amount": "41",
 			"currency":     currency,
 		},
-		"collaborators": []string{utils.Nodes[utils.NODE1].ID},
+		"write_access": map[string]interface{}{
+			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
+		},
 	}
 
 	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)

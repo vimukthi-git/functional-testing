@@ -18,16 +18,15 @@ func TestCreateInvoiceUnpaidNFT(t *testing.T) {
 	currency := "USD"
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
-			"number":         "12324",
-			"status":         "unpaid",
-			"sender":         utils.Nodes[utils.NODE1].ID,
-			"document_type":  "invoice",
-			"date_due":       "2018-09-26T23:12:37.902198664Z",
-			"gross_amount":   "40",
-			"currency":       currency,
-			"net_amount":     "40",
+			"number":        "12324",
+			"status":        "unpaid",
+			"sender":        utils.Nodes[utils.NODE1].ID,
+			"document_type": "invoice",
+			"date_due":      "2018-09-26T23:12:37.902198664Z",
+			"gross_amount":  "40",
+			"currency":      currency,
+			"net_amount":    "40",
 		},
-		"collaborators":    []string{},
 	}
 
 	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
