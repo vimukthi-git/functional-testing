@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-nodes: 'https://35.184.66.29:8082,https://35.184.39.100:8082'
+nodes: 'http://35.184.66.29:8082,http://35.184.39.100:8082'
 
 network: 'russianhill'
 
