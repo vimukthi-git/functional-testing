@@ -42,7 +42,9 @@ func TestCreateInvoiceUnpaidNFT(t *testing.T) {
 		"depositAddress": "0x44a0579754d6c94e7bb2c26bfa7394311cc50ccb", // Centrifuge address
 	}
 	obj = MintInvoiceUnpaidNFT(t, e, utils.Nodes[utils.NODE1].ID, nftPayload)
-	assert.NotNil(t, obj.Value("token_id").String())
+	doc = GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
+	assert.True(t, len(doc.Path("$.header.nfts[0].token_id").String().Raw()) > 0, "successful tokenId should have length 77")
+	assert.True(t, len(doc.Path("$.header.nfts[0].token_index").String().Raw()) > 0, "successful tokenIndex should have a value")
 }
 
 func MintInvoiceUnpaidNFT(t *testing.T, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
