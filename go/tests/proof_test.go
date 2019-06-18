@@ -39,7 +39,7 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 }
 
 func GetProof(t *testing.T, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}) *httpexpect.Object {
-	obj := utils.AddCommonHeaders(e.POST("/documents/"+documentID+"/proofs"), auth).
+	obj := utils.AddCommonHeaders(e.POST("/v1/documents/"+documentID+"/proofs"), auth).
 		WithJSON(payload).
 		Expect().Status(http.StatusOK)
 	assertOkResponse(t, obj)

@@ -11,8 +11,8 @@ import (
 const (
 	NODE1         = "node1"
 	NODE2         = "node2"
-	INVOICE       = "invoice"
-	PURCHASEORDER = "purchaseorder"
+	INVOICE       = "invoices"
+	PURCHASEORDER = "purchase_orders"
 )
 
 var Nodes map[string]node
