@@ -29,7 +29,7 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -81,7 +81,7 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -132,7 +132,7 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusCreated)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -182,7 +182,7 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusCreated)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -218,16 +218,16 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, docIdentifier string) *httpexpect.Value {
 	objGet := utils.AddCommonHeaders(e.GET(fmt.Sprintf("/v1/%s/%s", docType, docIdentifier)), auth).
 		Expect().Status(http.StatusOK)
-	assertOkResponse(t, objGet)
+	assertOkResponse(t, objGet, http.StatusOK)
 	objGet.JSON().Path("$.header.document_id").String().Equal(docIdentifier)
 	return objGet.JSON()
 }
 
-func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
+func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, payload map[string]interface{}, status int) *httpexpect.Object {
 	path := fmt.Sprintf("/v1/%s", docType)
 	method := "POST"
-	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
-	assertOkResponse(t, resp)
+	resp := getResponse(method, path, e, auth, payload).Status(status)
+	assertOkResponse(t, resp, status)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
 	waitTillSuccess(t, e, auth, txID)
@@ -238,7 +238,7 @@ func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth str
 	path := fmt.Sprintf("/v1/%s/%s", docType, documentID)
 	method := "PUT"
 	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
-	assertOkResponse(t, resp)
+	assertOkResponse(t, resp, http.StatusOK)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
 	waitTillSuccess(t, e, auth, txID)
@@ -251,8 +251,8 @@ func getResponse(method, path string, e *httpexpect.Expect, auth string, payload
 		Expect()
 }
 
-func assertOkResponse(t *testing.T, response *httpexpect.Response) {
-	if response.Raw().StatusCode != http.StatusOK {
+func assertOkResponse(t *testing.T, response *httpexpect.Response, status int) {
+	if response.Raw().StatusCode != status {
 		assert.Fail(t, "Response Payload: ", response.Body().Raw())
 	}
 }
