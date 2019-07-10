@@ -29,7 +29,7 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -52,7 +52,7 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusOK)
+	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusAccepted)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
@@ -81,7 +81,7 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -104,7 +104,7 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE1].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusOK)
+	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusAccepted)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
@@ -132,7 +132,7 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusCreated)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -154,7 +154,7 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusCreated)
+	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusAccepted)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.total_amount").String().Equal("41")
@@ -182,7 +182,7 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusCreated)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusAccepted)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -204,7 +204,7 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusCreated)
+	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusAccepted)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.total_amount").String().Equal("41")
