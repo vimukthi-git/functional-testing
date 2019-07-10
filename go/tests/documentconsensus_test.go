@@ -26,12 +26,10 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "40",
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -51,12 +49,10 @@ func TestCreateAndUpdateInvoiceFromOrigin(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "41",
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusOK)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
@@ -82,12 +78,10 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "40",
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -107,12 +101,10 @@ func TestCreateAndUpdateInvoiceFromCollaborator(t *testing.T) {
 			"currency":     currency,
 			"net_amount":   "41",
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE1].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE1].ID},
 	}
 
-	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.INVOICE, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusOK)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.gross_amount").String().Equal("41")
@@ -137,12 +129,10 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 			"total_amount": "40",
 			"currency":     currency,
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusCreated)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -161,12 +151,10 @@ func TestCreateAndUpdatePurchaseOrderFromOrigin(t *testing.T) {
 			"total_amount": "41",
 			"currency":     currency,
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, docIdentifier, payload, http.StatusCreated)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.total_amount").String().Equal("41")
@@ -191,12 +179,10 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 			"total_amount": "40",
 			"currency":     currency,
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.PURCHASEORDER, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusCreated)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -215,12 +201,10 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 			"total_amount": "41",
 			"currency":     currency,
 		},
-		"write_access": map[string]interface{}{
-			"collaborators": []string{utils.Nodes[utils.NODE2].ID},
-		},
+		"write_access": []string{utils.Nodes[utils.NODE2].ID},
 	}
 
-	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload)
+	obj = UpdateDocument(t, utils.PURCHASEORDER, e1, utils.Nodes[utils.NODE2].ID, docIdentifier, payload, http.StatusCreated)
 
 	// check updated gross amount
 	obj.Value("data").Path("$.total_amount").String().Equal("41")
@@ -232,29 +216,29 @@ func TestCreateAndUpdatePurchaseOrderFromCollaborator(t *testing.T) {
 }
 
 func GetDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, docIdentifier string) *httpexpect.Value {
-	objGet := utils.AddCommonHeaders(e.GET(fmt.Sprintf("/%s/%s", docType, docIdentifier)), auth).
+	objGet := utils.AddCommonHeaders(e.GET(fmt.Sprintf("/v1/%s/%s", docType, docIdentifier)), auth).
 		Expect().Status(http.StatusOK)
-	assertOkResponse(t, objGet)
+	assertOkResponse(t, objGet, http.StatusOK)
 	objGet.JSON().Path("$.header.document_id").String().Equal(docIdentifier)
 	return objGet.JSON()
 }
 
-func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
-	path := fmt.Sprintf("/%s", docType)
+func CreateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, payload map[string]interface{}, status int) *httpexpect.Object {
+	path := fmt.Sprintf("/v1/%s", docType)
 	method := "POST"
-	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
-	assertOkResponse(t, resp)
+	resp := getResponse(method, path, e, auth, payload).Status(status)
+	assertOkResponse(t, resp, status)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
 	waitTillSuccess(t, e, auth, txID)
 	return obj
 }
 
-func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}) *httpexpect.Object {
-	path := fmt.Sprintf("/%s/%s", docType, documentID)
+func UpdateDocument(t *testing.T, docType string, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}, status int) *httpexpect.Object {
+	path := fmt.Sprintf("/v1/%s/%s", docType, documentID)
 	method := "PUT"
-	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
-	assertOkResponse(t, resp)
+	resp := getResponse(method, path, e, auth, payload).Status(status)
+	assertOkResponse(t, resp, status)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
 	waitTillSuccess(t, e, auth, txID)
@@ -267,14 +251,14 @@ func getResponse(method, path string, e *httpexpect.Expect, auth string, payload
 		Expect()
 }
 
-func assertOkResponse(t *testing.T, response *httpexpect.Response) {
-	if response.Raw().StatusCode != http.StatusOK {
+func assertOkResponse(t *testing.T, response *httpexpect.Response, status int) {
+	if response.Raw().StatusCode != status {
 		assert.Fail(t, "Response Payload: ", response.Body().Raw())
 	}
 }
 
 func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
-	txID := resp.Value("header").Path("$.transaction_id").String().Raw()
+	txID := resp.Value("header").Path("$.job_id").String().Raw()
 	if txID == "" {
 		t.Error("transaction ID empty")
 	}
@@ -284,7 +268,7 @@ func getTransactionID(t *testing.T, resp *httpexpect.Object) string {
 
 func waitTillSuccess(t *testing.T, e *httpexpect.Expect, auth string, txID string) {
 	for {
-		resp := utils.AddCommonHeaders(e.GET("/transactions/"+txID), auth).Expect().Status(200).JSON().Object()
+		resp := utils.AddCommonHeaders(e.GET("/v1/jobs/"+txID), auth).Expect().Status(200).JSON().Object()
 		status := resp.Path("$.status").String().Raw()
 		if status == "pending" {
 			time.Sleep(100 * time.Millisecond)

@@ -22,12 +22,11 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 		},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
 	proofPayload := map[string]interface{}{
-		"type":   "http://github.com/centrifuge/centrifuge-protobufs/invoice/#invoice.InvoiceData",
 		"fields": []string{"invoice.net_amount", "invoice.currency"},
 	}
 
@@ -40,9 +39,9 @@ func TestProofGenerationWithMultipleFields(t *testing.T) {
 }
 
 func GetProof(t *testing.T, e *httpexpect.Expect, auth string, documentID string, payload map[string]interface{}) *httpexpect.Object {
-	obj := utils.AddCommonHeaders(e.POST("/document/"+documentID+"/proof"), auth).
+	obj := utils.AddCommonHeaders(e.POST("/v1/documents/"+documentID+"/proofs"), auth).
 		WithJSON(payload).
 		Expect().Status(http.StatusOK)
-	assertOkResponse(t, obj)
+	assertOkResponse(t, obj, http.StatusOK)
 	return obj.JSON().Object()
 }

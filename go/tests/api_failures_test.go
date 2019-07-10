@@ -19,7 +19,7 @@ func assertFailResponse(t *testing.T, response *httpexpect.Response) {
 func testWrongFormat(t *testing.T, docType string) {
 	c := utils.GetInsecureClient(t, utils.NODE1)
 
-	path := fmt.Sprintf("/%s", docType)
+	path := fmt.Sprintf("/v1/%s", docType)
 	method := "POST"
 
 	// nil create payload
@@ -33,7 +33,7 @@ func testWrongFormat(t *testing.T, docType string) {
 	resp = getResponse(method, path, c, utils.Nodes[utils.NODE1].ID, p)
 	assertFailResponse(t, resp)
 
-	path = fmt.Sprintf("/%s/%s", docType, "")
+	path = fmt.Sprintf("/v1/%s/%s", docType, "")
 	method = "PUT"
 
 	// nil update

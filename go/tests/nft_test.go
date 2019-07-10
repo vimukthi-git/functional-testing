@@ -29,7 +29,7 @@ func TestCreateInvoiceUnpaidNFT(t *testing.T) {
 		},
 	}
 
-	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload)
+	obj := CreateDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, payload, http.StatusOK)
 
 	docIdentifier := obj.Value("header").Path("$.document_id").String().NotEmpty().Raw()
 
@@ -38,8 +38,8 @@ func TestCreateInvoiceUnpaidNFT(t *testing.T) {
 
 	// mint invoice unpaid NFT
 	nftPayload := map[string]interface{}{
-		"identifier":     docIdentifier,
-		"depositAddress": "0x44a0579754d6c94e7bb2c26bfa7394311cc50ccb", // Centrifuge address
+		"document_id":     docIdentifier,
+		"deposit_address": "0x44a0579754d6c94e7bb2c26bfa7394311cc50ccb", // Centrifuge address
 	}
 	obj = MintInvoiceUnpaidNFT(t, e, utils.Nodes[utils.NODE1].ID, nftPayload)
 	doc = GetDocument(t, utils.INVOICE, e, utils.Nodes[utils.NODE1].ID, docIdentifier)
@@ -48,10 +48,10 @@ func TestCreateInvoiceUnpaidNFT(t *testing.T) {
 }
 
 func MintInvoiceUnpaidNFT(t *testing.T, e *httpexpect.Expect, auth string, payload map[string]interface{}) *httpexpect.Object {
-	path := fmt.Sprintf("/token/mint/invoice/unpaid/%s", payload["identifier"])
+	path := fmt.Sprintf("/v1/invoices/%s/mint/unpaid", payload["document_id"])
 	method := "POST"
 	resp := getResponse(method, path, e, auth, payload).Status(http.StatusOK)
-	assertOkResponse(t, resp)
+	assertOkResponse(t, resp, http.StatusOK)
 	obj := resp.JSON().Object()
 	txID := getTransactionID(t, obj)
 	waitTillSuccess(t, e, auth, txID)

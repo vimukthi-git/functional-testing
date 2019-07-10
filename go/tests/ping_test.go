@@ -12,7 +12,7 @@ func TestPing(t *testing.T) {
 	obj := e.GET("/ping").
 		Expect().
 		Status(http.StatusOK)
-	assertOkResponse(t, obj)
+	assertOkResponse(t, obj, http.StatusOK)
 	obj.JSON().Object().Value("network").Equal(utils.Network)
 	obj.JSON().Object().ContainsKey("version")
 }
